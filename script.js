@@ -7,6 +7,16 @@ document.body.style.userSelect = "none";
 // 描画用
 const ctx = canvas.getContext("2d");
 
+
+// 線の太さ
+ctx.lineWidth = 3;
+
+// 線の端を丸くする
+ctx.lineCap = "round";
+
+// 線のつなぎ目を丸くする
+ctx.lineJoin = "round";
+
 // （文字選択・スクロール暴発防止）
 document.addEventListener(
   "touchstart",
