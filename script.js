@@ -1,57 +1,43 @@
-
-// Canvasを取得
-const canvas = document.getElementById("noteCanvas");
-
-// 描画用
+const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-// Canvasサイズ設定
-canvas.width = window.innerWidth - 40;
-canvas.height = 600;
+// キャンバスサイズ
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-// 描画中かどうか
-let isDrawing = false;
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "black";
+}
 
-// Pointerを押した
-canvas.addEventListener("pointerdown", (event) => {
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
-    isDrawing = true;
+let drawing = false;
+
+// 描き始め
+canvas.addEventListener("pointerdown", (e) => {
+    drawing = true;
 
     ctx.beginPath();
-
-    ctx.moveTo(
-        event.offsetX,
-        event.offsetY
-    );
-
+    ctx.moveTo(e.offsetX, e.offsetY);
 });
 
-// Pointerを動かした
-canvas.addEventListener("pointermove", (event) => {
+// 描画
+canvas.addEventListener("pointermove", (e) => {
+    if (!drawing) return;
 
-    if (!isDrawing) {
-        return;
-    }
-
-    ctx.lineTo(
-        event.offsetX,
-        event.offsetY
-    );
-
+    ctx.lineTo(e.offsetX, e.offsetY);
     ctx.stroke();
-
 });
 
-// Pointerを離した
+// 描き終わり
 canvas.addEventListener("pointerup", () => {
-
-    isDrawing = false;
-
+    drawing = false;
 });
 
-// Canvas外へ出た
 canvas.addEventListener("pointerleave", () => {
-
-    isDrawing = false;
-
+    drawing = false;
 });
