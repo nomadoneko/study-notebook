@@ -3,8 +3,11 @@ const ctx = canvas.getContext("2d");
 
 // キャンバスサイズ
 function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const rect = canvas.getBoundingClientRect();
+
+    // 表示サイズに合わせる
+    canvas.width = rect.width;
+    canvas.height = rect.height;
 
     ctx.lineWidth = 3;
     ctx.lineCap = "round";
@@ -20,8 +23,8 @@ function getPoint(e) {
     const rect = canvas.getBoundingClientRect();
 
     return {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
+        x: (e.clientX - rect.left) * (canvas.width / rect.width),
+        y: (e.clientY - rect.top) * (canvas.height / rect.height)
     };
 }
 
