@@ -32,6 +32,12 @@ let drawing = false;
 
 // 描き始め
 canvas.addEventListener("pointerdown", (e) => {
+
+    // Apple Pencil以外は無視
+    if (e.pointerType !== "pen") {
+        return;
+    }
+
     e.preventDefault();
 
     drawing = true;
@@ -44,7 +50,13 @@ canvas.addEventListener("pointerdown", (e) => {
 
 // 描画
 canvas.addEventListener("pointermove", (e) => {
+
     if (!drawing) return;
+
+    // Apple Pencil以外は無視
+    if (e.pointerType !== "pen") {
+        return;
+    }
 
     e.preventDefault();
 
