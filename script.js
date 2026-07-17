@@ -30,6 +30,15 @@ function getPoint(e) {
 
 let drawing = false;
 
+// すべての線を保存
+let strokes = [];
+
+// 今描いている線
+let currentStroke = null;
+
+// 線ID
+let nextStrokeId = 1;
+
 // 描き始め
 canvas.addEventListener("pointerdown", (e) => {
 
@@ -40,12 +49,26 @@ canvas.addEventListener("pointerdown", (e) => {
 
     e.preventDefault();
 
-    drawing = true;
+drawing = true;
 
-    const p = getPoint(e);
+const p = getPoint(e);
 
-    ctx.beginPath();
-    ctx.moveTo(p.x, p.y);
+// 新しい線を作成
+currentStroke = {
+    id: nextStrokeId++,
+    type: "pen",
+    color: ctx.strokeStyle,
+    width: ctx.lineWidth,
+    points: [
+        {
+            x: p.x,
+            y: p.y
+        }
+    ]
+};
+
+ctx.beginPath();
+ctx.moveTo(p.x, p.y);
 });
 
 // 描画
@@ -62,14 +85,25 @@ canvas.addEventListener("pointermove", (e) => {
 
     const p = getPoint(e);
 
-    ctx.lineTo(p.x, p.y);
-    ctx.stroke();
+currentStroke.points.push({
+    x: p.x,
+    y: p.y
+});
+
+ctx.lineTo(p.x, p.y);
+ctx.stroke();
 });
 
 // 描き終わり
 canvas.addEventListener("pointerup", (e) => {
     e.preventDefault();
+
     drawing = false;
+
+    if (currentStroke) {
+        strokes.push(currentStroke);
+        currentStroke = null;
+    }
 });
 
 canvas.addEventListener("pointercancel", () => {
