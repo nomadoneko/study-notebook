@@ -116,7 +116,7 @@ function getPoint(e) {
 // ======================================================
 
 // 描き始め
-canvas.addEventListener("pointerdown", (e) => {
+function startDrawing(e) {
 
   // Apple Pencilのみ描画
   if (e.pointerType !== "pen") {
@@ -153,10 +153,10 @@ canvas.addEventListener("pointerdown", (e) => {
   ctx.beginPath();
   ctx.moveTo(p.x, p.y);
 
-});
+}
 
 // 描画中
-canvas.addEventListener("pointermove", (e) => {
+function draw(e) {
 
   if (!drawing) return;
 
@@ -179,10 +179,10 @@ canvas.addEventListener("pointermove", (e) => {
   ctx.lineTo(p.x, p.y);
   ctx.stroke();
 
-});
+}
 
 // 描画終了
-canvas.addEventListener("pointerup", (e) => {
+function endDrawing(e) {
 
   e.preventDefault();
 
@@ -197,10 +197,10 @@ canvas.addEventListener("pointerup", (e) => {
 
   }
 
-});
+}
 
 // 描画キャンセル
-canvas.addEventListener("pointercancel", () => {
+function cancelDrawing() {
 
   drawing = false;
 
@@ -213,23 +213,9 @@ canvas.addEventListener("pointercancel", () => {
 
   }
 
-});
+}
 
-// キャンバス外へ出た
-canvas.addEventListener("pointerleave", () => {
 
-  drawing = false;
-
-  // 描画中の線を保存
-  if (currentStroke) {
-
-    strokes.push(currentStroke);
-
-    currentStroke = null;
-
-  }
-
-});
 
 // ======================================================
 // その他イベント
@@ -275,3 +261,41 @@ window.addEventListener(
   "resize",
   resizeCanvas
 );
+
+// // ======================================================
+// // イベント登録
+// // ======================================================
+
+canvas.addEventListener("pointerdown", startDrawing);
+canvas.addEventListener("pointermove", draw);
+canvas.addEventListener("pointerup", endDrawing);
+canvas.addEventListener("pointercancel", cancelDrawing);
+canvas.addEventListener("pointerleave", cancelDrawing);
+
+// canvas.addEventListener("contextmenu", (e) => {
+//   e.preventDefault();
+// });
+
+// canvas.addEventListener(
+//   "touchstart",
+//   (e) => {
+//     e.preventDefault();
+//   },
+//   { passive: false }
+// );
+
+// canvas.addEventListener(
+//   "touchmove",
+//   (e) => {
+//     e.preventDefault();
+//   },
+//   { passive: false }
+// );
+
+// // ======================================================
+// // 初期化
+// // ======================================================
+
+// resizeCanvas();
+
+// window.addEventListener("resize", resizeCanvas);
