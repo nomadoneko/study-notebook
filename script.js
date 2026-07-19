@@ -217,24 +217,29 @@ function cancelDrawing() {
 
 
 
-// ======================================================
-// その他イベント
-// ======================================================
 
-// コピー・翻訳などのメニューを無効化
+
+
+
+
+// // ======================================================
+// // イベント登録
+// // ======================================================
+
+canvas.addEventListener("pointerdown", startDrawing);
+canvas.addEventListener("pointermove", draw);
+canvas.addEventListener("pointerup", endDrawing);
+canvas.addEventListener("pointercancel", cancelDrawing);
+canvas.addEventListener("pointerleave", cancelDrawing);
+
 canvas.addEventListener("contextmenu", (e) => {
-
   e.preventDefault();
-
 });
 
-// 長押しを無効化
 canvas.addEventListener(
   "touchstart",
   (e) => {
-
     e.preventDefault();
-
   },
   { passive: false }
 );
@@ -242,12 +247,11 @@ canvas.addEventListener(
 canvas.addEventListener(
   "touchmove",
   (e) => {
-
     e.preventDefault();
-
   },
   { passive: false }
 );
+
 
 // ======================================================
 // 初期化
@@ -261,41 +265,3 @@ window.addEventListener(
   "resize",
   resizeCanvas
 );
-
-// // ======================================================
-// // イベント登録
-// // ======================================================
-
-canvas.addEventListener("pointerdown", startDrawing);
-canvas.addEventListener("pointermove", draw);
-canvas.addEventListener("pointerup", endDrawing);
-canvas.addEventListener("pointercancel", cancelDrawing);
-canvas.addEventListener("pointerleave", cancelDrawing);
-
-// canvas.addEventListener("contextmenu", (e) => {
-//   e.preventDefault();
-// });
-
-// canvas.addEventListener(
-//   "touchstart",
-//   (e) => {
-//     e.preventDefault();
-//   },
-//   { passive: false }
-// );
-
-// canvas.addEventListener(
-//   "touchmove",
-//   (e) => {
-//     e.preventDefault();
-//   },
-//   { passive: false }
-// );
-
-// // ======================================================
-// // 初期化
-// // ======================================================
-
-// resizeCanvas();
-
-// window.addEventListener("resize", resizeCanvas);
