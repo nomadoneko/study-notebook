@@ -42,10 +42,10 @@ function resizeCanvas() {
 
   const rect = canvas.getBoundingClientRect();
 
-// 初回のみキャンバスの高さを設定
-if (canvasHeight === 0) {
-  canvasHeight = rect.height * 3;
-}
+// // 初回のみキャンバスの高さを設定
+// if (canvasHeight === 0) {
+//   canvasHeight = rect.height * 3;
+// }
 
 // 表示サイズに合わせる
 canvas.width = rect.width;
