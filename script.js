@@ -28,6 +28,9 @@ let currentPen = {
   width: 3,
 };
 
+// キャンバスの高さ
+let canvasHeight = 0;
+
 // ======================================================
 // キャンバス関連
 // ======================================================
@@ -37,9 +40,14 @@ function resizeCanvas() {
 
   const rect = canvas.getBoundingClientRect();
 
-  // 表示サイズに合わせる
-  canvas.width = rect.width;
-  canvas.height = rect.height;
+// 初回のみキャンバスの高さを設定
+if (canvasHeight === 0) {
+  canvasHeight = rect.height * 3;
+}
+
+// 表示サイズに合わせる
+canvas.width = rect.width;
+canvas.height = canvasHeight;
 
   // ペン設定
   ctx.lineWidth = currentPen.width;
