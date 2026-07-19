@@ -42,6 +42,8 @@ function resizeCanvas() {
 
   const rect = canvas.getBoundingClientRect();
 
+  canvas.style.height = "100vh";
+
 // // 初回のみキャンバスの高さを設定
 // if (canvasHeight === 0) {
 //   canvasHeight = rect.height * 3;
