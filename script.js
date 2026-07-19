@@ -50,7 +50,7 @@ if (canvasHeight === 0) {
 
 // 表示サイズに合わせる
 canvas.width = rect.width;
-canvas.height = canvasHeight;
+canvas.height = rect.height;
 
   // ペン設定
   ctx.lineWidth = currentPen.width;
