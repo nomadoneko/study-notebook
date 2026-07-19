@@ -54,14 +54,28 @@ body {
   touch-action: none;
 }
 
+/* ====================================================== */
+/* 確認用 */
+/* ====================================================== */
+
 #testMessage {
   position: fixed;
-  top: 10px;
-  left: 10px;
+
+  top: 20px;
+  left: 20px;
 
   background: yellow;
   color: black;
 
+  font-size: 30px;
+
   padding: 10px;
+
   z-index: 9999;
+}
+
+
+/* Canvas範囲確認用 */
+#canvas {
+  background-color: lightblue;
 }
