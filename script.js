@@ -1,10 +1,20 @@
 // ======================================================
-// キャンバス
+// キャンバス取得
 // ======================================================
 
-// キャンバス取得
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+// すべてのページCanvasを取得
+const canvases = document.querySelectorAll(".pageCanvas");
+
+// 各Canvasの描画コンテキストを保存
+const contexts = [];
+
+canvases.forEach((canvas) => {
+
+  contexts.push(
+    canvas.getContext("2d")
+  );
+
+});
 
 // ======================================================
 // アプリ状態（State）
@@ -13,8 +23,21 @@ const ctx = canvas.getContext("2d");
 // 描画中かどうか
 let drawing = false;
 
-// 保存されているすべての線
-let strokes = [];
+// ページごとの線データ
+let pages = [];
+
+// 現在操作するページ番号
+let currentPage = 0;
+
+// ======================================================
+// ページ初期化
+// ======================================================
+
+canvases.forEach((canvas, index) => {
+
+  pages[index] = [];
+
+});
 
 // 現在描いている線
 let currentStroke = null;
@@ -40,26 +63,29 @@ let canvasHeight = 3000;
 // キャンバスサイズを画面サイズに合わせる
 function resizeCanvas() {
 
-  const rect = canvas.getBoundingClientRect();
+  canvases.forEach((canvas, index) => {
 
-  canvas.style.height = "100vh";
+    const ctx = contexts[index];
 
-// // 初回のみキャンバスの高さを設定
-// if (canvasHeight === 0) {
-//   canvasHeight = rect.height * 3;
-// }
+    const rect = canvas.getBoundingClientRect();
 
-// 表示サイズに合わせる
-canvas.width = rect.width;
-canvas.height = rect.height;
 
-  // ペン設定
-  ctx.lineWidth = currentPen.width;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-  ctx.strokeStyle = currentPen.color;
+    // Canvas内部サイズ
+    canvas.width = rect.width;
+    canvas.height = rect.height;
 
-  // 保存されている線を描き直す
+
+    // ペン設定
+    ctx.lineWidth = currentPen.width;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = currentPen.color;
+
+
+  });
+
+
+  // 描画を復元
   redrawCanvas();
 
 }
