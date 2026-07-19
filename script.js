@@ -2,10 +2,8 @@
 // キャンバス取得
 // ======================================================
 
-// すべてのページCanvasを取得
 const canvases = document.querySelectorAll(".pageCanvas");
 
-// 各Canvasの描画コンテキストを保存
 const contexts = [];
 
 canvases.forEach((canvas) => {
@@ -16,93 +14,96 @@ canvases.forEach((canvas) => {
 
 });
 
+
 // ======================================================
-// アプリ状態（State）
+// アプリ状態
 // ======================================================
 
-// 描画中かどうか
 let drawing = false;
+
 
 // ページごとの線データ
 let pages = [];
 
-// 現在操作するページ番号
-let currentPage = 0;
+canvases.forEach(() => {
 
-// ======================================================
-// ページ初期化
-// ======================================================
-
-canvases.forEach((canvas, index) => {
-
-  pages[index] = [];
+  pages.push([]);
 
 });
 
-// 現在描いている線
+
+// 現在描画中の線
 let currentStroke = null;
 
-// 次に使用するストロークID
+
+// 次の線ID
 let nextStrokeId = 1;
 
-// 現在のペン設定
+
+// ペン設定
 let currentPen = {
+
   color: "black",
+
   width: 3,
+
 };
 
-// キャンバスの高さ
-let canvasHeight = 3000;
-
 
 
 // ======================================================
-// キャンバス関連
+// Canvasサイズ調整
 // ======================================================
 
-// キャンバスサイズを画面サイズに合わせる
 function resizeCanvas() {
+
 
   canvases.forEach((canvas, index) => {
 
-    const ctx = contexts[index];
 
     const rect = canvas.getBoundingClientRect();
 
+    const ctx = contexts[index];
 
-    // Canvas内部サイズ
+
     canvas.width = rect.width;
+
     canvas.height = rect.height;
 
 
-    // ペン設定
     ctx.lineWidth = currentPen.width;
+
     ctx.lineCap = "round";
+
     ctx.lineJoin = "round";
+
     ctx.strokeStyle = currentPen.color;
 
 
   });
 
 
-  // 描画を復元
   redrawCanvas();
 
 }
 
+
+
 // ======================================================
-// 保存されている線を描画
+// 描画復元
 // ======================================================
 
 function redrawCanvas() {
 
+
   pages.forEach((pageStrokes, pageIndex) => {
 
+
     const canvas = canvases[pageIndex];
+
     const ctx = contexts[pageIndex];
 
 
-    // キャンバス消去
     ctx.clearRect(
       0,
       0,
@@ -111,7 +112,7 @@ function redrawCanvas() {
     );
 
 
-    // そのページの線を描画
+
     pageStrokes.forEach((stroke) => {
 
 
@@ -122,9 +123,11 @@ function redrawCanvas() {
 
       ctx.beginPath();
 
+
       ctx.strokeStyle = stroke.color;
 
       ctx.lineWidth = stroke.width;
+
 
 
       ctx.moveTo(
@@ -133,198 +136,350 @@ function redrawCanvas() {
       );
 
 
+
       for (
         let i = 1;
         i < stroke.points.length;
         i++
       ) {
 
+
         ctx.lineTo(
           stroke.points[i].x,
           stroke.points[i].y
         );
+
 
       }
 
 
       ctx.stroke();
 
+
     });
 
 
   });
 
+
 }
 
+
+
 // ======================================================
-// 座標関連
+// 座標取得
 // ======================================================
 
-// PointerEventからキャンバス上の座標を取得
-function getPoint(e) {
+function getPoint(e, pageIndex) {
+
+
+  const canvas = canvases[pageIndex];
+
 
   const rect = canvas.getBoundingClientRect();
 
+
+
   return {
 
-    x: (e.clientX - rect.left) * (canvas.width / rect.width),
 
-    y: (e.clientY - rect.top) * (canvas.height / rect.height),
+    x:
+      (e.clientX - rect.left)
+      *
+      (canvas.width / rect.width),
+
+
+
+    y:
+      (e.clientY - rect.top)
+      *
+      (canvas.height / rect.height)
+
 
   };
 
+
 }
 
+
+
 // ======================================================
-// 描画イベント
+// 描画開始
 // ======================================================
 
-// 描き始め
-function startDrawing(e) {
+function startDrawing(e, pageIndex) {
 
-  // Apple Pencilのみ描画
+
   if (e.pointerType !== "pen") {
+
     return;
+
   }
 
+
   e.preventDefault();
+
+
+
+  const ctx = contexts[pageIndex];
+
+
 
   drawing = true;
 
-  const p = getPoint(e);
 
-  // 新しい線を作成
+
+  const p = getPoint(e, pageIndex);
+
+
+
   currentStroke = {
+
 
     id: nextStrokeId++,
 
-    type: "pen",
+
+    pageIndex: pageIndex,
+
 
     color: currentPen.color,
 
+
     width: currentPen.width,
 
+
     points: [
+
       {
         x: p.x,
-        y: p.y,
-      },
-    ],
+        y: p.y
+      }
+
+    ]
+
 
   };
 
-  // 描画開始
+
+
   ctx.beginPath();
-  ctx.moveTo(p.x, p.y);
+
+  ctx.moveTo(
+    p.x,
+    p.y
+  );
+
 
 }
 
+
+
+// ======================================================
 // 描画中
-function draw(e) {
+// ======================================================
 
-  if (!drawing) return;
+function draw(e, pageIndex) {
 
-  // Apple Pencilのみ描画
-  if (e.pointerType !== "pen") {
+
+  if (!drawing) {
+
     return;
+
   }
+
+
+  if (e.pointerType !== "pen") {
+
+    return;
+
+  }
+
 
   e.preventDefault();
 
-  const p = getPoint(e);
 
-  // 座標を保存
+
+  const ctx = contexts[pageIndex];
+
+
+
+  const p = getPoint(e, pageIndex);
+
+
+
   currentStroke.points.push({
+
     x: p.x,
-    y: p.y,
+
+    y: p.y
+
   });
 
-  // キャンバスへ描画
-  ctx.lineTo(p.x, p.y);
+
+
+  ctx.lineTo(
+
+    p.x,
+
+    p.y
+
+  );
+
+
   ctx.stroke();
 
+
+
 }
 
+
+
+// ======================================================
 // 描画終了
-function endDrawing(e) {
+// ======================================================
+
+function endDrawing(e, pageIndex) {
+
 
   e.preventDefault();
 
+
+
   drawing = false;
 
-  // 線を保存
+
+
   if (currentStroke) {
 
-    strokes.push(currentStroke);
+
+    pages[currentStroke.pageIndex].push(
+      currentStroke
+    );
+
 
     currentStroke = null;
 
+
   }
+
 
 }
 
-// 描画キャンセル
+
+
+// ======================================================
+// キャンセル
+// ======================================================
+
 function cancelDrawing() {
 
+
   drawing = false;
 
-  // 描画中の線を保存
-  if (currentStroke) {
 
-    strokes.push(currentStroke);
+  currentStroke = null;
 
-    currentStroke = null;
-
-  }
 
 }
 
 
 
+// ======================================================
+// イベント登録
+// ======================================================
+
+canvases.forEach((canvas, index) => {
 
 
+  canvas.addEventListener(
+    "pointerdown",
+    (e) => startDrawing(e, index)
+  );
 
 
+  canvas.addEventListener(
+    "pointermove",
+    (e) => draw(e, index)
+  );
 
-// // ======================================================
-// // イベント登録
-// // ======================================================
 
-canvas.addEventListener("pointerdown", startDrawing);
-canvas.addEventListener("pointermove", draw);
-canvas.addEventListener("pointerup", endDrawing);
-canvas.addEventListener("pointercancel", cancelDrawing);
-canvas.addEventListener("pointerleave", cancelDrawing);
+  canvas.addEventListener(
+    "pointerup",
+    (e) => endDrawing(e, index)
+  );
 
-canvas.addEventListener("contextmenu", (e) => {
-  e.preventDefault();
+
+  canvas.addEventListener(
+    "pointercancel",
+    cancelDrawing
+  );
+
+
+  canvas.addEventListener(
+    "pointerleave",
+    cancelDrawing
+  );
+
+
+  canvas.addEventListener(
+    "contextmenu",
+    (e) => {
+
+      e.preventDefault();
+
+    }
+  );
+
+
 });
 
-canvas.addEventListener(
-  "touchstart",
-  (e) => {
-    e.preventDefault();
-  },
-  { passive: false }
-);
 
-canvas.addEventListener(
-  "touchmove",
-  (e) => {
-    e.preventDefault();
-  },
-  { passive: false }
-);
+
+// ======================================================
+// タッチスクロール防止
+// ======================================================
+
+canvases.forEach((canvas)=>{
+
+
+  canvas.addEventListener(
+    "touchstart",
+    (e)=>{
+
+      e.preventDefault();
+
+    },
+    {
+      passive:false
+    }
+  );
+
+
+
+  canvas.addEventListener(
+    "touchmove",
+    (e)=>{
+
+      e.preventDefault();
+
+    },
+    {
+      passive:false
+    }
+  );
+
+
+});
+
 
 
 // ======================================================
 // 初期化
 // ======================================================
 
-// 初回のキャンバスサイズ設定
 resizeCanvas();
 
-// 画面サイズ変更時にキャンバスを再調整
+
 window.addEventListener(
   "resize",
   resizeCanvas
