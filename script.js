@@ -90,43 +90,69 @@ function resizeCanvas() {
 
 }
 
-// 保存されている線をすべて描画する
+// ======================================================
+// 保存されている線を描画
+// ======================================================
+
 function redrawCanvas() {
 
-  // キャンバスを消去
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  pages.forEach((pageStrokes, pageIndex) => {
 
-  // 保存されている線を順番に描画
-  strokes.forEach((stroke) => {
+    const canvas = canvases[pageIndex];
+    const ctx = contexts[pageIndex];
 
-    if (stroke.points.length === 0) return;
 
-    ctx.beginPath();
-
-    ctx.strokeStyle = stroke.color;
-    ctx.lineWidth = stroke.width;
-
-    ctx.moveTo(
-      stroke.points[0].x,
-      stroke.points[0].y
+    // キャンバス消去
+    ctx.clearRect(
+      0,
+      0,
+      canvas.width,
+      canvas.height
     );
 
-    for (let i = 1; i < stroke.points.length; i++) {
 
-      ctx.lineTo(
-        stroke.points[i].x,
-        stroke.points[i].y
+    // そのページの線を描画
+    pageStrokes.forEach((stroke) => {
+
+
+      if (stroke.points.length === 0) {
+        return;
+      }
+
+
+      ctx.beginPath();
+
+      ctx.strokeStyle = stroke.color;
+
+      ctx.lineWidth = stroke.width;
+
+
+      ctx.moveTo(
+        stroke.points[0].x,
+        stroke.points[0].y
       );
 
-    }
 
-    ctx.stroke();
+      for (
+        let i = 1;
+        i < stroke.points.length;
+        i++
+      ) {
+
+        ctx.lineTo(
+          stroke.points[i].x,
+          stroke.points[i].y
+        );
+
+      }
+
+
+      ctx.stroke();
+
+    });
+
 
   });
-
-  // ペン設定を元に戻す
-  ctx.strokeStyle = currentPen.color;
-  ctx.lineWidth = currentPen.width;
 
 }
 
