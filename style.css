@@ -1,3 +1,4 @@
+
 /* ====================================================== */
 /* 全体設定 */
 /* ====================================================== */
@@ -32,7 +33,7 @@ body {
 
 #canvasContainer {
   width: 100%;
-  height: 100vh;
+  height: 100%;
 
   overflow-y: auto;
   overflow-x: hidden;
@@ -41,25 +42,77 @@ body {
 }
 
 /* ====================================================== */
+/* キャンバス */
+/* ====================================================== */
+
+#canvas {
+  display: block;
+
+  width: 100%;
+
+  background-color: #ffffff;
+
+  touch-action: none;
+}
+
+/* ====================================================== */
 /* ノートページ */
 /* ====================================================== */
 
 .page {
+
   width: 100%;
+
   margin-bottom: 20px;
-  background: #ffffff;
+
+  background: white;
+
 }
+
 
 /* ====================================================== */
 /* ページ内Canvas */
 /* ====================================================== */
 
 .pageCanvas {
+
   display: block;
 
   width: 100%;
 
-  background: #ffffff;
+  height: 800px;
 
-  touch-action: manipulation;
+  background: white;
+
+  touch-action: none;
+
 }
+
+/* ====================================================== */
+/* 確認用 */
+/* ====================================================== */
+
+#testMessage {
+  position: fixed;
+
+  top: 20px;
+  left: 20px;
+
+  background: yellow;
+  color: black;
+
+  font-size: 30px;
+
+  padding: 10px;
+
+  z-index: 9999;
+}
+
+
+/* Canvas範囲確認用 */
+#canvas {
+  background-color: lightblue;
+}
+
+
+
