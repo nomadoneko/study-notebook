@@ -68,8 +68,7 @@ function resizeCanvas() {
 
     canvas.width = rect.width;
 
-    canvas.height = rect.height;
-
+    canvas.height = rect.height * 3;
 
     ctx.lineWidth = currentPen.width;
 
